@@ -22,6 +22,7 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'school_id',
+        'supporter_id',
         'type',
     ];
 
@@ -71,6 +72,11 @@ class User extends Authenticatable implements JWTSubject
     public function school()
     {
         return $this->belongsTo(School::class);
+    }
+
+    public function supporter()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function lessons()

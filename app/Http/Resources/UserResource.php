@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Mappers\UserTypeMapper;
+use App\Models\School;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
@@ -14,12 +16,39 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-            'name' => $this->name,
-            'email' => $this->email,
-            'type' => $this->type,
-            'school' => new SchoolResource($this->school),
-            'lessons' => new LessonResource($this->lessons),
-        ];
+        switch ($this->type) {
+            case UserTypeMapper::SUPER_ADMIN:
+                return [
+                    'name' => $this->name,
+                    'email' => $this->email,
+                    'type' => $this->type,
+                    'schools' => SchoolResource::collection(School::all()),
+                    'lessons' => new LessonResource($this->lessons),
+                ];
+            case UserTypeMapper::MANAGER:
+                return [
+                    'name' => $this->name,
+                    'email' => $this->email,
+                    'type' => $this->type,
+                    'school' => new SchoolResource($this->school),
+                    'lessons' => new LessonResource($this->lessons),
+                    'supporter' => $this->type == UserTypeMapper::
+                ];
+            case UserTypeMapper::TEACHER:
+                return [
+                    'name' => $this->name,
+                    'email' => $this->email,
+                    'type' => $this->type,
+                    'school' => new SchoolResource($this->school),
+                    'lessons' => new TeacherLessonResource($this->lessons),
+                ];
+            case UserTypeMapper::STUDENT:
+                return [
+                    'name' => $this->name,
+                    'email' => $this->email,
+                ];
+            default:
+                return [];
+        }
     }
 }

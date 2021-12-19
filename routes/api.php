@@ -28,6 +28,8 @@ Route::group([
 ], function () {
     Route::post('user/lesson', 'UserController@assignLesson');
     Route::delete('user/lesson', 'UserController@revokeLesson');
+    Route::post('user/supporter', 'UserController@assignSupporter');
+    Route::delete('user/supporter', 'UserController@revokeSupporter');
 
     Route::apiResource('user', 'UserController');
     Route::apiResource('school', 'SchoolController');

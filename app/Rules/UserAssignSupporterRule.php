@@ -5,8 +5,15 @@ namespace App\Rules;
 use App\Models\User;
 use Illuminate\Contracts\Validation\Rule;
 
-class UserAssignLessonRule implements Rule
+class UserAssignSupporterRule implements Rule
 {
+    private $validType;
+
+    public function __construct($validType)
+    {
+        $this->validType = $validType;
+    }
+
     /**
      * Determine if the validation rule passes.
      *
@@ -18,7 +25,7 @@ class UserAssignLessonRule implements Rule
     {
         $user = User::find($value);
 
-        return $user && in_array($user->type, ['teacher', 'student']);
+        return $user && $user->type == $this->validType;
     }
 
     /**
@@ -28,6 +35,6 @@ class UserAssignLessonRule implements Rule
      */
     public function message()
     {
-        return 'Only teachers and students can assign to lessons.';
+        return 'user type must be '.$this->validType.'.';
     }
 }

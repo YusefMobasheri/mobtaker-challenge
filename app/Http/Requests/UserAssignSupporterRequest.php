@@ -2,10 +2,11 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\UserAssignLessonRule;
+use App\Mappers\UserTypeMapper;
+use App\Rules\UserAssignSupporterRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserAssignLessonRequest extends FormRequest
+class UserAssignSupporterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +26,8 @@ class UserAssignLessonRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => ['required', 'integer', 'exists:users,id', new UserAssignLessonRule()],
-            'lesson_id' => ['required', 'integer', 'exists:lessons,id'],
+            'user_id' => ['required', 'integer', 'exists:users,id', new UserAssignSupporterRule(UserTypeMapper::STUDENT)],
+            'supporter_id' => ['required', 'integer', 'exists:users,id', new UserAssignSupporterRule(UserTypeMapper::TEACHER)],
         ];
     }
 }

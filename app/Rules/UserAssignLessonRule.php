@@ -2,6 +2,7 @@
 
 namespace App\Rules;
 
+use App\Mappers\UserTypeMapper;
 use App\Models\User;
 use Illuminate\Contracts\Validation\Rule;
 
@@ -18,7 +19,7 @@ class UserAssignLessonRule implements Rule
     {
         $user = User::find($value);
 
-        return $user && in_array($user->type, ['teacher', 'student']);
+        return $user && in_array($user->type, [UserTypeMapper::TEACHER, UserTypeMapper::STUDENT]);
     }
 
     /**
