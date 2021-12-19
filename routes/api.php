@@ -26,10 +26,10 @@ Route::group([
 Route::group([
     'middleware' => ['jwt.auth']
 ], function () {
+    Route::post('user/lesson', 'UserController@assignLesson');
+    Route::delete('user/lesson', 'UserController@revokeLesson');
+
     Route::apiResource('user', 'UserController');
     Route::apiResource('school', 'SchoolController');
     Route::apiResource('lesson', 'LessonController');
-
-    Route::post('user/lesson', 'UserController@assignLesson');
-    Route::delete('user/lesson', 'UserController@revokeLesson');
 });

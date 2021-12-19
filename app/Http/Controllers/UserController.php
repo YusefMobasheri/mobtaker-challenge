@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserAssignLessonRequest;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
-use App\Http\Resources\UserLessonResource;
 use App\Http\Resources\UserResource;
 use App\Mappers\UserTypeMapper;
 use App\Models\User;
@@ -17,7 +16,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index()
     {
@@ -27,7 +26,7 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return UserResource
      */
     public function store(UserCreateRequest $request)
     {
@@ -39,8 +38,8 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Models\User $user
-     * @return \Illuminate\Http\Response
+     * @param User $user
+     * @return UserResource
      */
     public function show(User $user)
     {
@@ -50,9 +49,9 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\User $user
-     * @return \Illuminate\Http\Response
+     * @param UserUpdateRequest $request
+     * @param int $id
+     * @return UserResource
      */
     public function update(UserUpdateRequest $request, int $id)
     {
@@ -65,12 +64,12 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Models\User $user
-     * @return \Illuminate\Http\Response
+     * @param User $user
+     * @return JsonResponse
      */
     public function destroy(User $user)
     {
-        return $user->delete();
+        return response()->json(['data' => $user->delete()]);
     }
 
     /**
@@ -91,18 +90,15 @@ class UserController extends Controller
      * Revoke lesson from specified user.
      *
      * @param UserAssignLessonRequest $request
-     * @return UserResource
+     * @return JsonResponse
      */
     public function revokeLesson(UserAssignLessonRequest $request)
     {
         $data = $request->validated();
         $userLesson = UserLesson::where('user_id', $data['user_id'])
             ->where('lesson_id', $data['lesson_id'])
-            ->first();
+            ->delete();
 
-        if($userLesson)
-            $userLesson->delete();
-
-        return new UserResource($userLesson->user);
+        return response()->json(['data' => $userLesson]);
     }
 }
