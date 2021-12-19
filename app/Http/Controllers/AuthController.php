@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
+use App\Mappers\UserTypeMapper;
+use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -26,7 +26,13 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth()->attempt($credentials)) {
+        // Restrict student access
+        $user = User::where('email', $credentials['email'])->first();
+        if ($user->type == UserTypeMapper::STUDENT) {
+            return response()->json(['error' => 'Students access not allowed'], 403);
+        }
+
+        if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -68,7 +74,7 @@ class AuthController extends Controller
     /**
      * Get the token array structure.
      *
-     * @param  string $token
+     * @param string $token
      *
      * @return \Illuminate\Http\JsonResponse
      */

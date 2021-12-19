@@ -29,4 +29,7 @@ Route::group([
     Route::apiResource('user', 'UserController');
     Route::apiResource('school', 'SchoolController');
     Route::apiResource('lesson', 'LessonController');
+
+    Route::post('user/lesson', 'UserController@assignLesson');
+    Route::delete('user/lesson', 'UserController@revokeLesson');
 });

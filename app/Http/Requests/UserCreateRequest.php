@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Mappers\UserTypeMapper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -14,7 +15,7 @@ class UserCreateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -29,7 +30,7 @@ class UserCreateRequest extends FormRequest
             'email' => 'required|email',
             'password' => 'required|string|min:6',
             'school_id' => 'required|integer|exists:schools,id',
-            'type' => ['required', 'string', Rule::in(['manager', 'teacher', 'student'])]
+            'type' => ['required', 'string', Rule::in([UserTypeMapper::MANAGER, UserTypeMapper::TEACHER, UserTypeMapper::STUDENT])]
         ];
     }
 }

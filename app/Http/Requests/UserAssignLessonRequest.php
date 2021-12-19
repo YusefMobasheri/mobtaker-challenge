@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\UserAssignLessonRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class LessonUpdateRequest extends FormRequest
+class UserAssignLessonRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +25,8 @@ class LessonUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'sometimes|required|string',
-            'unit' => 'sometimes|required|numeric'
+            'user_id' => ['required', 'integer', 'exists:users,id', new UserAssignLessonRule()],
+            'lesson_id' => ['required', 'integer', 'exists:lessons,id'],
         ];
     }
 }

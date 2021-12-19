@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Mappers\UserTypeMapper;
 use App\Models\Lesson;
 use App\Models\School;
 use App\Models\User;
@@ -24,7 +25,7 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
             'password' => bcrypt('111222333'), // password
             'remember_token' => Str::random(10),
-            'type' => 'superAdmin',
+            'type' => UserTypeMapper::SUPER_ADMIN,
             'school_id' => School::first()->id,
         ]);
         User::factory(15)->create();

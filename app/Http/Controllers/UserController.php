@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserAssignLessonRequest;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\Http\Resources\UserLessonResource;
 use App\Http\Resources\UserResource;
+use App\Mappers\UserTypeMapper;
 use App\Models\User;
+use App\Models\UserLesson;
 use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
@@ -17,7 +21,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return new UserResource(User::where('type', '!=', 'superAdmin')->get());
+        return UserResource::collection(User::where('type', '!=', UserTypeMapper::SUPER_ADMIN)->get());
     }
 
     /**
@@ -67,5 +71,38 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         return $user->delete();
+    }
+
+    /**
+     * Assign lesson to specified user.
+     *
+     * @param UserAssignLessonRequest $request
+     * @return UserResource
+     */
+    public function assignLesson(UserAssignLessonRequest $request)
+    {
+        $data = $request->validated();
+        $userLesson = UserLesson::create($data);
+
+        return new UserResource($userLesson->user);
+    }
+
+    /**
+     * Revoke lesson from specified user.
+     *
+     * @param UserAssignLessonRequest $request
+     * @return UserResource
+     */
+    public function revokeLesson(UserAssignLessonRequest $request)
+    {
+        $data = $request->validated();
+        $userLesson = UserLesson::where('user_id', $data['user_id'])
+            ->where('lesson_id', $data['lesson_id'])
+            ->first();
+
+        if($userLesson)
+            $userLesson->delete();
+
+        return new UserResource($userLesson->user);
     }
 }

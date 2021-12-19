@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Mappers\UserTypeMapper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -14,7 +15,7 @@ class UserUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -27,9 +28,8 @@ class UserUpdateRequest extends FormRequest
         return [
             'name' => 'sometimes|required|string',
             'email' => 'sometimes|required|email',
-            'password' => 'sometimes|required|string|min:6',
             'school_id' => 'sometimes|required|integer|exists:schools,id',
-            'type' => ['sometimes', 'required', 'string', Rule::in(['manager', 'teacher', 'student'])]
+            'type' => ['sometimes', 'required', 'string', Rule::in([UserTypeMapper::MANAGER, UserTypeMapper::TEACHER, UserTypeMapper::STUDENT])]
         ];
     }
 }
