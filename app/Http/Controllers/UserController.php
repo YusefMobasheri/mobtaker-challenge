@@ -90,15 +90,16 @@ class UserController extends Controller
      * Revoke lesson from specified user.
      *
      * @param UserAssignLessonRequest $request
-     * @return JsonResponse
+     * @return UserResource
      */
     public function revokeLesson(UserAssignLessonRequest $request)
     {
         $data = $request->validated();
-        $userLesson = UserLesson::where('user_id', $data['user_id'])
-            ->where('lesson_id', $data['lesson_id'])
-            ->delete();
 
-        return response()->json(['data' => $userLesson]);
+        /** @var User $user */
+        $user = User::find($data['user_id']);
+        $user->lessons()->where('lesson_id', $data['lesson_id'])->delete();
+
+        return new UserResource($user->refresh());
     }
 }
