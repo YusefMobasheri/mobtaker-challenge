@@ -32,7 +32,6 @@ class UserResource extends JsonResource
                     'type' => $this->type,
                     'school' => new SchoolResource($this->school),
                     'lessons' => new LessonResource($this->lessons),
-                    'supporter' => $this->type == UserTypeMapper::
                 ];
             case UserTypeMapper::TEACHER:
                 return [
